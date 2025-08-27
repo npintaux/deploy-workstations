@@ -1,0 +1,41 @@
+#
+# Generic cloudbuild.yaml file used to generate Cloud Workstation images.
+# The same cloudbuild.yaml file is used by triggers and a local-exec terraform resource
+# executed once the GitLab connection is in place, and before the Cloud Workstation
+# resources are deployed.
+# The _BUILD_CONTEXT substitution variable is here to cover both cases of trigger-based builds
+# and local-exec builds. 
+#
+steps:
+- id: "Build"
+  dir: '${_BUILD_CONTEXT}'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build', 
+    '-t', '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY_NAME}/${_IMAGE_NAME}:${_UNIQUE_TAG}', 
+    '.'
+  ]
+- id: "Push"
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY_NAME}/${_IMAGE_NAME}:${_UNIQUE_TAG}']
+- id: "Update Workstation Config"
+  name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:latest'
+  entrypoint: 'bash'
+  args:
+      - -c
+      - |
+        if [[ -n "${TRIGGER_NAME}" ]]; then
+          gcloud workstations configs update ${_CONFIG_ID} \
+              --cluster="${_CLUSTER}" \
+              --region=${LOCATION} \
+              --project=${PROJECT_ID} \
+              --container-custom-image="${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY_NAME}/${_IMAGE_NAME}:${_UNIQUE_TAG}"
+        fi
+images:
+- '${LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY_NAME}/${_IMAGE_NAME}:${_UNIQUE_TAG}'
+options:
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _UNIQUE_TAG: ${BUILD_ID}
+  _CONFIG_ID: ''
+  _CLUSTER: ''
