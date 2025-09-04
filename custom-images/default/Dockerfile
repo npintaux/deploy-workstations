@@ -32,7 +32,7 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform
 #########################################################
 
 # Gemini CLI Companion
-ENV GEMINI_CLI_COMPANION_VERSION=0.1.21
+ENV GEMINI_CLI_COMPANION_VERSION=0.2.2
 RUN wget https://open-vsx.org/api/Google/gemini-cli-vscode-ide-companion/${GEMINI_CLI_COMPANION_VERSION}/file/Google.gemini-cli-vscode-ide-companion-${GEMINI_CLI_COMPANION_VERSION}.vsix && \
    unzip Google.gemini-cli-vscode-ide-companion-${GEMINI_CLI_COMPANION_VERSION}.vsix "extension/*" && \
    mv extension /opt/code-oss/extensions/gemini-cli-companion
@@ -84,8 +84,9 @@ RUN chmod a+rwx -R /opt/code-oss/extensions
 # IMAGE UPDATE                                          #
 #########################################################
 
-RUN sudo apt update -y
-RUN sudo apt upgrade -y
+# Remove the broken Helm repository source list file to prevent the `apt update` failure.
+RUN sudo rm -f /etc/apt/sources.list.d/helm-stable-debian.list
+RUN sudo apt-get update -y && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 #########################################################
 # LAST UPDATES                                          #
