@@ -31,21 +31,21 @@ log "Target plugins directory: ${AGY_PLUGINS_DIR}"
 
 mkdir -p "${AGY_PLUGINS_DIR}" "${AGY_SCRIPTS_DIR}" "${AGY_CLI_DIR}/scratch"
 
-# 1. Install / Clone meta-skills plugin from GitHub
-if [ ! -d "${AGY_PLUGINS_DIR}/meta-skills" ]; then
-  log "Cloning meta-skills plugin from GitHub..."
-  git clone --depth 1 https://github.com/npintaux/meta-skills.git "${AGY_PLUGINS_DIR}/meta-skills" || log "Warning: Failed to clone meta-skills plugin"
-else
-  log "meta-skills plugin is already installed at ${AGY_PLUGINS_DIR}/meta-skills."
-fi
+# # 1. Install / Clone meta-skills plugin from GitHub
+# if [ ! -d "${AGY_PLUGINS_DIR}/meta-skills" ]; then
+#   log "Cloning meta-skills plugin from GitHub..."
+#   git clone --depth 1 https://github.com/npintaux/meta-skills.git "${AGY_PLUGINS_DIR}/meta-skills" || log "Warning: Failed to clone meta-skills plugin"
+# else
+#   log "meta-skills plugin is already installed at ${AGY_PLUGINS_DIR}/meta-skills."
+# fi
 
-# 2. Install / Clone sdd-plugin from GitHub
-if [ ! -d "${AGY_PLUGINS_DIR}/sdd-plugin" ]; then
-  log "Cloning sdd-plugin from GitHub..."
-  git clone --depth 1 https://github.com/npintaux/sdd-plugin.git "${AGY_PLUGINS_DIR}/sdd-plugin" || log "Warning: Failed to clone sdd-plugin"
-else
-  log "sdd-plugin is already installed at ${AGY_PLUGINS_DIR}/sdd-plugin."
-fi
+# # 2. Install / Clone sdd-plugin from GitHub
+# if [ ! -d "${AGY_PLUGINS_DIR}/sdd-plugin" ]; then
+#   log "Cloning sdd-plugin from GitHub..."
+#   git clone --depth 1 https://github.com/npintaux/sdd-plugin.git "${AGY_PLUGINS_DIR}/sdd-plugin" || log "Warning: Failed to clone sdd-plugin"
+# else
+#   log "sdd-plugin is already installed at ${AGY_PLUGINS_DIR}/sdd-plugin."
+# fi
 
 # 3. Install custom statusline script (shows context filling & token counts)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
